@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import '../../screens/wallpaper_selection/wallpaper_selection_screen.dart';
 
 class FullScreenWallpaperItem extends StatelessWidget {
-  const FullScreenWallpaperItem({super.key, required this.assetPath});
+  const FullScreenWallpaperItem({
+    super.key,
+    required this.assetPath,
+    this.aspectRatio = 1.0,
+  });
 
   final String assetPath;
+  final double aspectRatio;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,10 @@ class FullScreenWallpaperItem extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => WallpaperSelectionScreen(assetPath: assetPath),
+        builder: (_) => WallpaperSelectionScreen(
+          assetPath: assetPath,
+          aspectRatio: aspectRatio,
+        ),
       ),
     );
   }

@@ -1,11 +1,71 @@
 import 'package:flutter/material.dart';
 import '../../components/wallpaper_selection/action_button.dart';
 import '../../components/wallpaper_selection/set_wallpaper_sheet.dart';
+import '../../components/wallpaper_selection/wallpaper_crop_editor.dart';
+import '../../services/database_service.dart';
 
-class WallpaperSelectionScreen extends StatelessWidget {
-  const WallpaperSelectionScreen({super.key, required this.assetPath});
+class WallpaperSelectionScreen extends StatefulWidget {
+  const WallpaperSelectionScreen({
+    super.key,
+    required this.assetPath,
+    this.aspectRatio = 1.0,
+  });
 
   final String assetPath;
+  final double aspectRatio;
+
+  @override
+  State<WallpaperSelectionScreen> createState() =>
+      _WallpaperSelectionScreenState();
+}
+
+class _WallpaperSelectionScreenState extends State<WallpaperSelectionScreen> {
+  bool _isFavorite = false;
+  final _dbService = DatabaseService();
+
+  @override
+  void initState() {
+    super.initState();
+    _checkIfFavorite();
+  }
+
+  Future<void> _checkIfFavorite() async {
+    final isFav = await _dbService.isFavorite(widget.assetPath);
+    if (mounted) {
+      setState(() {
+        _isFavorite = isFav;
+      });
+    }
+  }
+
+  Future<void> _toggleFavorite() async {
+    final newStatus = await _dbService.toggleFavorite(
+      widget.assetPath,
+      widget.aspectRatio,
+    );
+    if (mounted) {
+      setState(() {
+        _isFavorite = newStatus;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            newStatus ? 'Added to favorites' : 'Removed from favorites',
+          ),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
+  void _openCropEditor() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => WallpaperCropEditor(assetPath: widget.assetPath),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +87,7 @@ class WallpaperSelectionScreen extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(20),
         child: Image.asset(
-          assetPath,
+          widget.assetPath,
           fit: BoxFit.cover,
           width: double.infinity,
         ),
@@ -37,17 +97,25 @@ class WallpaperSelectionScreen extends StatelessWidget {
 
   Widget _buildActionButtons(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          CircularActionButton(icon: Icons.download, label: 'Download'),
+          CircularActionButton(
+            icon: Icons.crop,
+            label: 'Crop',
+            onTap: _openCropEditor,
+          ),
           CircularActionButton(
             icon: Icons.wallpaper,
             label: 'Set Wall',
-            onTap: () => showSetWallpaperSheet(context, assetPath),
+            onTap: () => showSetWallpaperSheet(context, widget.assetPath),
           ),
-          CircularActionButton(icon: Icons.bookmark_border, label: 'Saved'),
+          CircularActionButton(
+            icon: _isFavorite ? Icons.favorite : Icons.favorite_border,
+            label: 'Favorite',
+            onTap: _toggleFavorite,
+          ),
         ],
       ),
     );
