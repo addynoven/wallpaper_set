@@ -172,15 +172,18 @@ class _SetWallpaperSheetContentState extends State<_SetWallpaperSheetContent> {
     BuildContext context,
     Future<String?> Function() wallpaperOperation,
   ) async {
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
     setState(() => _isProcessing = true);
 
     final result = await wallpaperOperation();
 
     if (mounted) {
       setState(() => _isProcessing = false);
-      Navigator.pop(context);
+      navigator.pop();
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(content: Text(result ?? 'Wallpaper set successfully!')),
       );
     }

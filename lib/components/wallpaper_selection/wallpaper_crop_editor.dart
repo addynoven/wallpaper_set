@@ -119,7 +119,7 @@ class _WallpaperCropEditorState extends State<WallpaperCropEditor> {
                   'Pinch to zoom • Drag to move',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    color: Colors.white.withOpacity(0.7),
+                    color: Colors.white.withValues(alpha: 0.7),
                     fontSize: 14,
                   ),
                 ),
@@ -413,7 +413,7 @@ class _CropOverlayPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = Colors.black.withOpacity(0.6);
+    final paint = Paint()..color = Colors.black.withValues(alpha: 0.6);
 
     // Draw dark overlay on all four sides of the frame
     // Top
