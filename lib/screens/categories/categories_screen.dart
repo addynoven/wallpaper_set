@@ -109,25 +109,28 @@ class _AnimatedCategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final delay = index / wallpaperCategories.length;
+    // Safe delay calculation - clamp between 0 and 0.6
+    final totalItems = wallpaperCategories.length;
+    final delay = totalItems > 0
+        ? (index / totalItems * 0.6).clamp(0.0, 0.6)
+        : 0.0;
+    final endInterval = (delay + 0.4).clamp(0.0, 1.0);
+
     final animation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: controller,
-        curve: Interval(
-          delay,
-          (delay + 0.4).clamp(0, 1),
-          curve: Curves.easeOutBack,
-        ),
+        curve: Interval(delay, endInterval, curve: Curves.easeOutBack),
       ),
     );
 
     return AnimatedBuilder(
       animation: animation,
       builder: (context, child) {
+        final value = animation.value.clamp(0.0, 1.0);
         return Opacity(
-          opacity: animation.value.clamp(0, 1),
+          opacity: value,
           child: Transform.scale(
-            scale: 0.8 + (0.2 * animation.value),
+            scale: 0.8 + (0.2 * value),
             child: Transform.translate(
               offset: Offset(0, 20 * (1 - animation.value)),
               child: child,

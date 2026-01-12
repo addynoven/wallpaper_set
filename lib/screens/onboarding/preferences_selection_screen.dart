@@ -4,14 +4,16 @@ import '../../data/wallpaper_data.dart';
 import '../../services/preference_service.dart';
 import '../main_screen.dart';
 
-class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+class PreferencesSelectionScreen extends StatefulWidget {
+  const PreferencesSelectionScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  State<PreferencesSelectionScreen> createState() =>
+      _PreferencesSelectionScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _PreferencesSelectionScreenState
+    extends State<PreferencesSelectionScreen> {
   final CardSwiperController _controller = CardSwiperController();
   PreferenceService? _prefService;
   int _currentIndex = 0;

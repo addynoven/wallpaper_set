@@ -183,7 +183,7 @@ class _AnimatedBadge extends StatelessWidget {
       animation: animation,
       builder: (context, child) {
         return Opacity(
-          opacity: animation.value,
+          opacity: animation.value.clamp(0.0, 1.0),
           child: Transform.scale(scale: animation.value, child: child),
         );
       },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../services/preference_service.dart';
-import '../onboarding/onboarding_screen.dart';
+import '../onboarding/preferences_selection_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({
@@ -41,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 
     if (context.mounted) {
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const OnboardingScreen()),
+        MaterialPageRoute(builder: (_) => const PreferencesSelectionScreen()),
         (route) => false,
       );
     }
@@ -58,23 +58,11 @@ class _SettingsScreenState extends State<SettingsScreen>
             backgroundColor: Colors.black,
             floating: true,
             pinned: true,
-            expandedHeight: 120,
-            flexibleSpace: FlexibleSpaceBar(
-              title: const Text(
-                'Settings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              background: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.grey.shade900, Colors.black],
-                  ),
-                ),
+            title: const Text(
+              'Settings',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
@@ -169,7 +157,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                     child: Center(
                       child: Column(
                         children: [
-                          _PulsingIcon(icon: Icons.wallpaper_rounded),
+                          // App Logo
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(12),
+                            child: Image.asset(
+                              'assets/images/logo.jpg',
+                              width: 60,
+                              height: 60,
+                            ),
+                          ),
                           const SizedBox(height: 8),
                           Text(
                             'Wallpaper App',
@@ -451,55 +447,6 @@ class _AnimatedSwitch extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Pulsing icon animation
-class _PulsingIcon extends StatefulWidget {
-  const _PulsingIcon({required this.icon});
-
-  final IconData icon;
-
-  @override
-  State<_PulsingIcon> createState() => _PulsingIconState();
-}
-
-class _PulsingIconState extends State<_PulsingIcon>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1500),
-      vsync: this,
-    )..repeat(reverse: true);
-    _animation = Tween<double>(
-      begin: 0.8,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _animation,
-      builder: (context, child) {
-        return Opacity(
-          opacity: _animation.value,
-          child: Transform.scale(scale: _animation.value, child: child),
-        );
-      },
-      child: Icon(widget.icon, color: Colors.grey.shade700, size: 32),
     );
   }
 }

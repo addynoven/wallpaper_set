@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/main_screen.dart';
-import 'screens/onboarding/onboarding_screen.dart';
+import 'screens/onboarding/welcome_screen.dart';
 import 'services/preference_service.dart';
 
 import 'package:flutter/services.dart';
@@ -34,7 +34,7 @@ class WallpaperApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(scaffoldBackgroundColor: Colors.black),
-      home: showOnboarding ? const OnboardingScreen() : const MainScreen(),
+      home: showOnboarding ? const WelcomeScreen() : const MainScreen(),
     );
   }
 }
